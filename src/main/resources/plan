@@ -1,0 +1,32 @@
+-- 属性表
+CREATE TABLE `attribute_v1` (
+  `attribute_id` varchar(20) NOT NULL COMMENT '属性ID',
+  `attribute_name` varchar(50) COMMENT '属性名',
+  `attribute_labels` varchar(50) COMMENT '属性标签',
+  `attribute_describe` varchar(50) COMMENT '属性描述',
+  PRIMARY KEY (`property_id`)
+) ENGINE=InnoDB CHARSET=utf8;
+
+-- 规则属性表
+CREATE TABLE `rule_attribute_v1` (
+  `scene_id` varchar(20) NOT NULL COMMENT '场景ID',
+  `rule_id` varchar(50) NOT NULL COMMENT '规则ID',
+  `attribute_id` varchar(20) NOT NULL COMMENT '属性ID',
+  `attribute_name` varchar(50) COMMENT '属性名',
+  `attribute_labels` varchar(50) COMMENT '属性标签',
+  `attribute_value` varchar(50) COMMENT '属性描述',
+  PRIMARY KEY (`property_id`)
+) ENGINE=InnoDB CHARSET=utf8;
+
+rule "book_discount"
+    salience 100 // 规则的优先级
+    enabled true // 默认为true，是否启用规则
+    dialect "java" // 默认为java，指定规则使用的语言
+    no-loop true // 默认值false，防止死循环可以设置为true
+    data-effective "2021-01-01 10:02" // 指定规则的生效时间，默认格式 dd-MMM-yyyy
+    data-expires "2022-01-01 10:02" // 指定规则的失效时间，默认格式 dd-MMM-yyyy
+    when
+        eval(true)
+    then
+        System.out.println("触发规则");
+end

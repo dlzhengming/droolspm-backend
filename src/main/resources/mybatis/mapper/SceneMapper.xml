@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.drlm.backend.mapper.SceneMapper">
+
+	<select id="getSceneList" resultMap="sceneMap">
+		select
+			scene_id
+			,scene_name
+			,scene_package
+			,scene_describe
+		from scene_v1;
+	</select>
+
+	<select id="getRulesBySceneId" resultMap="ruleMap">
+		select a.scene_id,
+		a.rule_id,
+		a.rule_labels,
+		a.rule_name,
+		a.rule_describe,
+		a.conditions_data,
+		a.processing_data,
+		c.conditions_no,
+		c.conditions_template,
+		p.processing_no,
+		p.processing_template
+		from rule_v1 a
+		left join condition_f_v1 c on a.scene_id = c.scene_id and a.rule_id = c.rule_id
+		left join processing_f_v1 p on a.scene_id = p.scene_id and a.rule_id = p.rule_id
+		where a.scene_id  = #{sceneId}
+		order by c.conditions_no,p.processing_no;
+	</select>
+
+	<update id="updateRule">
+		update rule_v1
+		set conditions_data = #{conditionStr},
+		processing_data = #{processingStr}
+		where scene_id = #{sceneId}
+		and rule_id = #{ruleId};
+	</update>
+
+	<resultMap id="sceneMap" type="com.drlm.backend.entities.Scene" >
+		<id column="scene_id"  property="sceneId"/>
+		<result column="scene_name"  property="sceneName" />
+		<result column="scene_package"  property="scenePackage" />
+		<result column="scene_describe"  property="sceneDescribe" />
+	</resultMap>
+
+	<resultMap id="ruleMap" type="com.drlm.backend.entities.Rule" >
+		<result column="scene_id"  property="sceneId"/>
+		<result column="rule_id"  property="ruleId" />
+		<result column="rule_labels"  property="ruleLabels" />
+		<result column="rule_name"  property="ruleName" />
+		<result column="rule_describe"  property="ruleDescribe" />
+		<result column="conditions_data"  property="conditionsData" />
+		<result column="processing_data"  property="processingData" />
+		<collection property="conditions" ofType="com.drlm.backend.entities.Condition">
+			<result column="conditions_no"  property="conditionsNo" />
+			<result column="conditions_template"  property="conditionsTemplate" />
+		</collection>
+		<collection property="processing" ofType="com.drlm.backend.entities.Processing">
+			<result column="processing_no"  property="processingNo" />
+			<result column="processing_template"  property="processingTemplate" />
+		</collection>
+	</resultMap>
+
+</mapper>

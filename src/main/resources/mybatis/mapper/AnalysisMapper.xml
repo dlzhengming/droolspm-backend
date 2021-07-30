@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.drlm.backend.mapper.AnalysisMapper">
+    <resultMap id="analysisRuleMap" type="com.drlm.backend.dto.AnalysisScene">
+        <result column="scene_id" property="sceneId"/>
+        <result column="scene_name" property="sceneName"/>
+        <result column="scene_package" property="scenePackage"/>
+        <result column="scene_describe" property="sceneDescribe"/>
+        <collection property="analysisRuleList" ofType="com.drlm.backend.dto.AnalysisRule">
+            <result column="rule_id" property="ruleId"/>
+            <result column="rule_labels" property="ruleLabels"/>
+            <result column="rule_name" property="ruleName"/>
+            <result column="conditions_data" property="conditionsData"/>
+            <result column="processing_data" property="processingData"/>
+            <collection property="conditions" ofType="com.drlm.backend.dto.AnalysisCondition">
+                <result column="conditions_no" property="conditionsNo"/>
+                <result column="conditions_template" property="conditionsTemplate"/>
+            </collection>
+            <collection property="processing" ofType="com.drlm.backend.dto.AnalysisProcessing">
+                <result column="processing_no" property="processingNo"/>
+                <result column="processing_template" property="processingTemplate"/>
+            </collection>
+        </collection>
+    </resultMap>
+
+    <select id="getSceneRulesBySceneId" resultMap="analysisRuleMap">
+        select  s.scene_id,
+        s.scene_name,
+        s.scene_package,
+        s.scene_describe,
+        r.rule_id,
+        r.rule_labels,
+        r.rule_name,
+        r.conditions_data,
+        r.processing_data,
+        c.conditions_no,
+        c.conditions_template,
+        p.processing_no,
+        p.processing_template
+        from scene_v1 s
+        left join rule_v1 r on s.scene_id = r.scene_id
+        left join condition_b_v1 c on r.scene_id = c.scene_id  and r.rule_id = c.rule_id
+        left join processing_b_v1 p on r.scene_id = p.scene_id  and r.rule_id = p.rule_id
+        where s.scene_id  = #{sceneId}
+        order by r.rule_id,c.conditions_no,p.processing_no;
+    </select>
+
+</mapper>

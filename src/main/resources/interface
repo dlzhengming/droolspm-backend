@@ -1,0 +1,105 @@
+查询场景列表：
+请求： GET /scene/list
+响应：
+{
+    "STATUS": "0000",
+    "MESSAGE": "ok",
+    "DATA": [
+        {
+            "sceneId": "20210124075021",
+            "sceneName": "订单折扣",
+            "scenePackage": "order.discount",
+            "sceneDescribe": "按照原价进行折扣处理"
+        }
+    ]
+}
+
+查询规则详情：
+请求：GET /scene/{SCENE_ID}/rules
+参数：{SCENE_ID} --- 场景ID
+{
+    "STATUS": "0000",
+    "MESSAGE": "ok",
+    "DATA": [
+        {
+            "sceneId": "20210124075021",
+            "ruleId": "20210124080121",
+            "ruleLabels": "rule_01",
+            "ruleName": "规则一",
+            "ruleDescribe": "原价小于100元8折处理",
+            "conditionsData": "{\"$1\": \"<\",\"$2\": \"100\"}",
+            "processingData": "{\"$1\": \"0.8\"}",
+            "conditions": [
+                {
+                    "conditionsNo": "20210124080921",
+                    "conditionsTemplate": "[{\"type\":\"span\",\"value\":\"原价\"},{\"type\":\"select\",\"defaultValue\":\"<\",\"values\":[{\"value\":\">\",\"label\":\"大于\"},{\"value\":\"<\",\"label\":\"小于\"}]},{\"type\":\"text\",\"value\":\"100\"}]"
+                }
+            ],
+            "processing": [
+                {
+                    "processingNo": "20210124080923",
+                    "processingTemplate": "[{\"type\": \"span\",\"value\": \"实际金额 = 原价 * \"},{\"type\": \"text\",\"value\": \"0.8\"}]"
+                }
+            ]
+        },
+        {
+            "sceneId": "20210124075021",
+            "ruleId": "20210124080122",
+            "ruleLabels": "rule_02",
+            "ruleName": "规则二",
+            "ruleDescribe": "原价不小于100元7折处理",
+            "conditionsData": "{\"$1\": \">=\",\"$2\": \"100\"}",
+            "processingData": "{\"$1\": \"0.7\"}",
+            "conditions": [
+                {
+                    "conditionsNo": "20210124080922",
+                    "conditionsTemplate": "[{\"type\":\"span\",\"value\":\"原价\"},{\"type\":\"select\",\"defaultValue\":\">=\",\"values\":[{\"value\":\">=\",\"label\":\"不小于\"},{\"value\":\"<\",\"label\":\"小于\"}]},{\"type\":\"text\",\"value\":\"100\"}]"
+                }
+            ],
+            "processing": [
+                {
+                    "processingNo": "20210124080924",
+                    "processingTemplate": "[{\"type\": \"span\",\"value\": \"实际金额 = 原价 * \"},{\"type\": \"text\",\"value\": \"0.7\"}]"
+                }
+            ]
+        }
+    ]
+}
+
+保存修改：
+请求：POST /scene/{SCENE_ID}/rules
+参数：{SCENE_ID} --- 场景ID
+{
+	"rules": [
+        {
+            "ruleId": "20210124080121",
+            "conditions": [
+                {
+                    "conditionsNo": "20210124080921",
+                    "values": ["<", "90"]
+                }
+            ],
+            "processing": [
+                {
+                    "processingNo": "20210124080922",
+                    "values": ["0.85"]
+                }
+            ]
+        },
+        {
+            "ruleId": "20210124080122",
+            "conditions": [
+                {
+                    "conditionsNo": "20210124080923",
+                    "values": [">=", "90"]
+                }
+            ],
+            "processing": [
+                {
+                    "processingNo": "20210124080924",
+                    "values": ["0.75"]
+                }
+            ]
+        }
+	]
+}
